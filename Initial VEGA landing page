@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Early Access - VEGA Companion App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: #ffffff;
+            color: #333333;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Minimal Geometric Background */
+        .geometric-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .clock-rectangle {
+            position: absolute;
+            border-radius: 6px;
+            opacity: 0.6;
+        }
+
+        .clock-rect-1 {
+            width: 72px;
+            height: 600px;
+            top: 10%;
+            left: 50%;
+            margin-left: -36px;
+            background: #ffffff;
+            border: 2px solid #000000;
+            animation: clockwiseRotate1 20s linear infinite;
+            transform-origin: 36px 300px;
+        }
+
+        .clock-rect-2 {
+            width: 72px;
+            height: 600px;
+            top: 10%;
+            left: 50%;
+            margin-left: -36px;
+            background: #ffffff;
+            border: 2px solid #000000;
+            animation: clockwiseRotate2 30s linear infinite;
+            transform-origin: 36px 250px;
+        }
+
+        .clock-rect-3 {
+            width: 72px;
+            height: 600px;
+            top: 10%;
+            left: 50%;
+            margin-left: -36px;
+            background: #ffffff;
+            border: 2px solid #000000;
+            animation: clockwiseRotate3 40s linear infinite;
+            transform-origin: 36px 350px;
+        }
+
+        @keyframes clockwiseRotate1 {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes clockwiseRotate2 {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes clockwiseRotate3 {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(11, 25, 87, 0.1);
+            border-radius: 20px;
+            padding: 48px 40px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 10px 30px rgba(11, 25, 87, 0.1);
+        }
+
+        .vega-title {
+            font-size: 56px;
+            color: #0B1957;
+            font-weight: 100;
+            letter-spacing: 12px;
+            margin-bottom: 16px;
+            line-height: 1;
+            font-family: 'Helvetica Neue', 'Arial', sans-serif;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            font-size: 24px;
+            color: #0B1957;
+            font-weight: 300;
+            margin-bottom: 8px;
+        }
+
+        .tagline {
+            font-size: 18px;
+            color: #666666;
+            font-weight: 300;
+            margin-bottom: 40px;
+        }
+
+        .description {
+            font-size: 16px;
+            color: #555555;
+            font-weight: 300;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+
+        .form-container {
+            margin-bottom: 32px;
+        }
+
+        .email-input {
+            width: 100%;
+            padding: 16px 20px;
+            background: #ffffff;
+            border: 2px solid rgba(11, 25, 87, 0.15);
+            border-radius: 12px;
+            color: #333333;
+            font-size: 16px;
+            font-weight: 300;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .email-input::placeholder {
+            color: rgba(11, 25, 87, 0.5);
+        }
+
+        .email-input:focus {
+            outline: none;
+            border-color: #0B1957;
+            box-shadow: 0 0 0 3px rgba(11, 25, 87, 0.2);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px 20px;
+            background: #0B1957;
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(11, 25, 87, 0.3);
+        }
+
+        .submit-btn:hover {
+            background: #1a2570;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(11, 25, 87, 0.4);
+        }
+
+        .submit-btn:disabled {
+            background: rgba(11, 25, 87, 0.6);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .message {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 400;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+
+        .message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .message.success {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #059669;
+        }
+
+        .message.error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #dc2626;
+        }
+
+        .privacy-note {
+            font-size: 12px;
+            color: #888888;
+            margin-top: 24px;
+            line-height: 1.4;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 480px) {
+            .container {
+                padding: 32px 24px;
+                margin: 20px;
+            }
+
+            .vega-title {
+                font-size: 40px;
+                letter-spacing: 8px;
+            }
+
+            .subtitle {
+                font-size: 20px;
+            }
+
+            .tagline {
+                font-size: 16px;
+            }
+        }
+
+        /* Loading animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #ffffff;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Minimal Geometric Background -->
+    <div class="geometric-background">
+        <div class="clock-rectangle clock-rect-1"></div>
+        <div class="clock-rectangle clock-rect-2"></div>
+        <div class="clock-rectangle clock-rect-3"></div>
+    </div>
+
+    <div class="container">
+        <h1 class="vega-title">V.E.G.A</h1>
+        <h2 class="subtitle">AI Assistant</h2>
+        <p class="tagline">Virtual Executive General Assistant</p>
+        
+        <p class="description">
+            Your personal AI assistant. Join the early access list to be first to experience how V.E.G.A will revolutionize how you organize your life, priorities and goals.
+        </p>
+
+        <div class="form-container">
+            <input 
+                type="email" 
+                id="email" 
+                class="email-input" 
+                placeholder="Enter your email address"
+                required
+            >
+            <button type="button" id="submit-btn" class="submit-btn" onclick="submitEmail()">
+                Get Early Access
+            </button>
+        </div>
+
+        <div id="message" class="message"></div>
+
+        <p class="privacy-note">
+            We respect your privacy. Your email will only be used to notify you when V.E.G.A launches. No spam, ever.
+        </p>
+    </div>
+
+    <script>
+        // Supabase configuration
+        const SUPABASE_URL = 'https://xzepyjzbnpbbfccwilbj.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6ZXB5anpibnBiYmZjY3dpbGJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU3Mjk2NjUsImV4cCI6MjA3MTMwNTY2NX0.rGJBGY9UnRdGLLH_iJ7WBAlhXBcnPRDccywa5EfN5Tw';
+
+        async function submitEmail() {
+            const emailInput = document.getElementById('email');
+            const submitBtn = document.getElementById('submit-btn');
+            const messageDiv = document.getElementById('message');
+            
+            const email = emailInput.value.trim();
+            
+            // Basic email validation
+            if (!email || !isValidEmail(email)) {
+                showMessage('Please enter a valid email address.', 'error');
+                return;
+            }
+
+            // Get source from URL parameter or default
+            const urlParams = new URLSearchParams(window.location.search);
+            const source = urlParams.get('source') || 'vega_ai_landing_page';
+
+            // Disable button and show loading
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = 'Submitting<span class="loading"></span>';
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/email_signups`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        source: source
+                    })
+                });
+
+                if (response.ok) {
+                    showMessage('🎉 Success! You\'re on the early access list. We\'ll notify you when V.E.G.A launches.', 'success');
+                    emailInput.value = '';
+                } else if (response.status === 409) {
+                    showMessage('You\'re already on our early access list! We\'ll be in touch soon.', 'success');
+                    emailInput.value = '';
+                } else {
+                    throw new Error('Submission failed');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('Something went wrong. Please try again or contact us directly.', 'error');
+            } finally {
+                // Re-enable button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Get Early Access';
+            }
+        }
+
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type}`;
+            
+            // Trigger animation
+            setTimeout(() => {
+                messageDiv.classList.add('show');
+            }, 100);
+
+            // Hide message after 5 seconds for success, 7 seconds for error
+            const hideTimeout = type === 'success' ? 5000 : 7000;
+            setTimeout(() => {
+                messageDiv.classList.remove('show');
+            }, hideTimeout);
+        }
+
+        // Allow form submission with Enter key
+        document.getElementById('email').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                submitEmail();
+            }
+        });
+
+        // Basic form validation styling
+        document.getElementById('email').addEventListener('input', function(e) {
+            const email = e.target.value.trim();
+            if (email && !isValidEmail(email)) {
+                e.target.style.borderColor = 'rgba(239, 68, 68, 0.5)';
+            } else {
+                e.target.style.borderColor = 'rgba(11, 25, 87, 0.15)';
+            }
+        });
+    </script>
+</body>
+</html>
